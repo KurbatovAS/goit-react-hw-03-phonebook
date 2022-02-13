@@ -5,6 +5,10 @@ import ContactForm from './ContactForm';
 import Filter from './Filter';
 import Notitfication from './Notitfication';
 import ContactList from './ContactList';
+import {
+  getContactsFromLS,
+  addContactsToLS,
+} from './LocalStorage/LocalStorage';
 
 class App extends React.Component {
   state = {
@@ -16,6 +20,18 @@ class App extends React.Component {
     ],
     filter: '',
   };
+
+  componentDidMount() {
+    if (getContactsFromLS('contacts')) {
+      this.setState({ contacts: getContactsFromLS('contacts') });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      addContactsToLS('contacts', this.state.contacts);
+    }
+  }
 
   submitHandler = e => {
     e.preventDefault();
@@ -83,7 +99,7 @@ class App extends React.Component {
 
   render() {
     const contactsLength = this.state.contacts.length;
-    console.log('this.state.filter', this.state.filter);
+
     return (
       <>
         <Section title="Phonebook">
